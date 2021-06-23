@@ -2,8 +2,8 @@
 document.body.onload = getMove;
 
 function getMove(){  
-    getBestMove();  
-    document.body.innerHTML = "24";
+    var move = getBestMove();      
+    document.body.innerHTML = `${move[0]}${move[1]}`;
 }
 
 function getBestMove(){
@@ -30,6 +30,11 @@ function getBestMove(){
     var movs = getPosibleMoves(state, turn);
     console.log(`Posibles movimientos de ${turn}:`)
     console.log(movs);
+    var rnd = gentRand(0, movs.length - 1);
+    console.log(rnd);
+    if (movs.length > 0)
+        return movs[rnd]
+    return ["", ""];
 }
 
 function getPosibleMoves(state, turn){
@@ -217,4 +222,8 @@ function getParameterByName(name, url = window.location.href) {
     if (!results) return null;
     if (!results[2]) return '';
     return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+
+function gentRand(min, max){    
+    return Math.floor(Math.random() * (max - min)) + min
 }
