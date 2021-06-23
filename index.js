@@ -12,6 +12,7 @@ function getBestMove(){
     //console.log(state);
     //console.log(turno);
     /* ----------- pruebas ------------- */
+    /*
     state = `22222222 
              22222222 
              22222222 
@@ -24,10 +25,13 @@ function getBestMove(){
     turn = 1;
 
     state = state.replace(/\n/g, '');
-    state = state.replace(/ /g, '');    
+    state = state.replace(/ /g, ''); 
+    */   
     /* ----------- fin pruebas ------------- */
 
     var movs = getPosibleMoves(state, turn);
+    console.log("Estado:");
+    console.log(state);
     console.log(`Posibles movimientos de ${turn}:`)
     console.log(movs);
     var rnd = gentRand(0, movs.length - 1);
