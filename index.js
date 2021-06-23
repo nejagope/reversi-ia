@@ -1,9 +1,10 @@
+const level = 5;
 
 document.body.onload = getMove;
 
 function getMove(){  
     var move = getBestMove();      
-    document.body.innerHTML = `${move[0]}${move[1]}`;
+    document.body.innerHTML = `${move.row}${move.col}`;
 }
 
 function getBestMove(){
@@ -29,23 +30,26 @@ function getBestMove(){
     */   
     /* ----------- fin pruebas ------------- */
 
-    var movs = getPosibleMoves(state, turn);
+    var movs = getPossibleMoves(state, turn);
     console.log("Estado:");
     console.log(state);
     console.log(`Posibles movimientos de ${turn}:`)
     console.log(movs);    
         
-    if (movs.length > 0){
-        //var indxMov = gentRand(0, movs.length - 1);
-        movs.sort((m1, m2) => getHeuristica(m2[0], m2[1]) - getHeuristica(m1[0], m1[1]))                
+    if (movs.length > 0){        
+        movs.sort((m1, m2) => m2.heuristicaTablero - m1.heuristicaTablero);                
         console.log(`Mejor movimiento:`);
         console.log(movs[0]);
         return movs[0]
     }
-    return ["", ""];
+    return {row: "", col: ""};
 }
 
-function getPosibleMoves(state, turn){
+function getStateAfterMove(state, turn, mov){
+    var indx = index(mov.row, mov.col);
+}
+
+function getPossibleMoves(state, turn){
     var row = 0;
     var col = 0;
     var moves = [];
@@ -54,7 +58,13 @@ function getPosibleMoves(state, turn){
         if (state[i] == 2){
             //console.log(`se hallo ${turn} en ${row},${col}`)    
             if (playable(state, row, col, turn)){
-                moves.push([row, col]);
+                moves.push({
+                    row: row,
+                    col: col,
+                    state: state,
+                    turn: turn,
+                    heuristicaTablero: getHeuristica(row, col)
+                });                
             }
         }
         
@@ -242,8 +252,7 @@ function getHeuristica(row, col){
         [-20, -40, -5,-5,-5,-5,  -40,-20 ],
         [20,-5,15,3,3,15,-5,20],        
         [5,-5,3,3,3,3,-5,5],
-        //[5,-5,3,3,3,3,-5,5],
-        [5,-5,30,3,3,3,-5,5],
+        [5,-5,3,3,3,3,-5,5],        
         [20,-5,15,3,3,15,-5,20],
         [-20, -40, -5,-5,-5,-5,  -40,-20 ],
         [120, -20, 20, 5, 5, 20, -20, 120 ]
