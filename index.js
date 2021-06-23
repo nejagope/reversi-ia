@@ -33,11 +33,15 @@ function getBestMove(){
     console.log("Estado:");
     console.log(state);
     console.log(`Posibles movimientos de ${turn}:`)
-    console.log(movs);
-    var rnd = gentRand(0, movs.length - 1);
-    console.log(rnd);
-    if (movs.length > 0)
-        return movs[rnd]
+    console.log(movs);    
+        
+    if (movs.length > 0){
+        //var indxMov = gentRand(0, movs.length - 1);
+        movs.sort((m1, m2) => getHeuristica(m2[0], m2[1]) - getHeuristica(m1[0], m1[1]))                
+        console.log(`Mejor movimiento:`);
+        console.log(movs[0]);
+        return movs[0]
+    }
     return ["", ""];
 }
 
@@ -230,4 +234,19 @@ function getParameterByName(name, url = window.location.href) {
 
 function gentRand(min, max){    
     return Math.floor(Math.random() * (max - min)) + min
+}
+
+function getHeuristica(row, col){
+    var heuristicaTablero =  [
+        [120, -20, 20, 5, 5, 20, -20, 120 ],
+        [-20, -40, -5,-5,-5,-5,  -40,-20 ],
+        [20,-5,15,3,3,15,-5,20],        
+        [5,-5,3,3,3,3,-5,5],
+        //[5,-5,3,3,3,3,-5,5],
+        [5,-5,30,3,3,3,-5,5],
+        [20,-5,15,3,3,15,-5,20],
+        [-20, -40, -5,-5,-5,-5,  -40,-20 ],
+        [120, -20, 20, 5, 5, 20, -20, 120 ]
+    ]
+    return heuristicaTablero[row][col];
 }
