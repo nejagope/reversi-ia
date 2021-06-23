@@ -1,5 +1,5 @@
 
-document.body.onload = getMove;
+document.body.ready = getMove;
 
 function getMove(){    
     document.body.innerHTML = "35";
