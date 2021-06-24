@@ -45,201 +45,243 @@ function getBestMove(){
     return {row: "", col: ""};
 }
 
+function setCharAt(str, pos, chr){    
+    return str.substring(0, pos) + chr + str.substring(pos + 1);
+}
+
 function getStateAfterMove(state, turn, mov){
     var indx = index(mov.row, mov.col);
-    var row = mov.row;
-    var col = mov.col;
+    
     if (!isValidIndex(indx)){
         return;
     }
-    //se coloca la pieza en la casilla    
-    state = state.substring(0, indx) + turn.toString() + state.substring(indx + 1);//reemplaza la ficha del oponente por la del jugador que movió    
+    //se coloca la pieza en la casilla 
+    state = setCharAt(state, indx, turn);       
+    
     //comer piezas del oponente
 
     var op = opponent(turn);
     
     var newState = state;
 
-    //se analiza la horizontal derecha    
-    indx = index(row, col + 1);
-    if (isValidIndex(indx)){
-        //si hay un oponente a la derecha del espacio en blanco
-        if (state[indx] == op){
-            //se escanea hacia la derecha hasta hallar una ficha del color del jugador actual en la fila actual
-            for (var j = col + 1; j < 8; j++){  
-                indx = index(row, j);       
-                if (state[indx] == turn){
-                    state = newState;
-                    break;
-                }else if (state[indx] == op){
-                    newState = `${newState.substring(0, indx)}${turn}${newState.substring(indx + 1)}`;//reemplaza la ficha del oponente por la del jugador que movió
-                }else{
-                    break;
-                }
+    var row = 0;
+    var col = 0;
+    var estadoActual;
+    var c = 0;
+    do{
+        c++;
+        estadoActual = newState;
+        for (indx = 0; indx < newState.length; indx++){
+            if (newState[indx] != turn){
+                continue;
             }
-        }
-    }
     
-    //se analiza la horizontal izquierda
-    indx = index(row, col - 1);
-    if (isValidIndex(indx)){
-        //si hay un oponente a la izquierda del espacio en blanco
-        if (state[indx] == op){
-            //se escanea hacia la izquierda hasta hallar una ficha del color del jugador actual en la fila actual
-            for (var j = col - 1; j > -1; j--){
-                indx = index(row, j);       
-                if (state[indx] == turn){
-                    state = newState;
-                    break;
-                }else if (state[indx] == op){
-                    newState = `${newState.substring(0, indx)}${turn}${newState.substring(indx + 1)}`;//reemplaza la ficha del oponente por la del jugador que movió
-                }else{
-                    break;
+            row = Math.floor(indx / 8);
+            col = indx % 8;
+            
+            //se analiza la horizontal derecha    
+            indx = index(row, col + 1);
+            if (isValidIndex(indx)){
+                //si hay un oponente a la derecha del espacio en blanco
+                if (state[indx] == op){
+                    //se escanea hacia la derecha hasta hallar una ficha del color del jugador actual en la fila actual
+                    for (var j = col + 1; j < 8; j++){  
+                        indx = index(row, j);    
+
+                        if (state[indx] == turn){
+                            state = newState;
+                            break;
+                        }else if (state[indx] == op){
+                            newState = setCharAt(newState, indx, turn);//reemplaza la ficha del oponente por la del jugador que movió
+                        }else{
+                            newState = state;
+                            break;
+                        }
+                    }
+                    newState = state;
+                }
+            }
+            
+            //se analiza la horizontal izquierda
+            indx = index(row, col - 1);
+            if (isValidIndex(indx)){
+                //si hay un oponente a la izquierda del espacio en blanco
+                if (state[indx] == op){
+                    //se escanea hacia la izquierda hasta hallar una ficha del color del jugador actual en la fila actual
+                    for (var j = col - 1; j > -1; j--){
+                        indx = index(row, j);       
+                        if (state[indx] == turn){
+                            state = newState;
+                            break;
+                        }else if (state[indx] == op){
+                            newState = setCharAt(newState, indx, turn);//reemplaza la ficha del oponente por la del jugador que movió
+                        }else{
+                            newState = state;
+                            break;
+                        }
+                    } 
+                    newState = state;                   
+                }
+            }
+    
+            //se analiza la vertical inferior
+            indx = index(row + 1, col);
+            if (isValidIndex(indx)){
+                //si hay un oponente hacia abajo del espacio en blanco
+                if (state[indx] == op){
+                    //se escanea hacia abajo hasta hallar una ficha del color del jugador actual en la fila actual
+                    for (var i = row + 1; i < 8; i++){
+                        indx = index(i, col);       
+                        if (state[indx] == turn){
+                            state = newState;
+                            break;
+                        }else if (state[indx] == op){
+                            newState = setCharAt(newState, indx, turn);//reemplaza la ficha del oponente por la del jugador que movió
+                        }else{
+                            newState = state;
+                            break;
+                        }
+                    }
+                    newState = state;
+                }
+            }
+    
+            //se analiza la vertical superior
+            indx = index(row - 1, col);
+            if (isValidIndex(indx)){
+                //si hay un oponente hacia arriba del espacio en blanco
+                if (state[indx] == op){
+                    //se escanea hacia arriba hasta hallar una ficha del color del jugador actual en la fila actual
+                    for (var i = row - 1; i > -1; i--){
+                        indx = index(i, col);       
+                        if (state[indx] == turn){
+                            state = newState;
+                            break;
+                        }else if (state[indx] == op){
+                            newState = setCharAt(newState, indx, turn);//reemplaza la ficha del oponente por la del jugador que movió
+                        }else{
+                            newState = state;
+                            break;
+                        }
+                    }
+                    newState = state;
+                }
+            }
+    
+            //se analiza la diagonal derecha superior
+            indx = index(row - 1, col + 1);
+            if (isValidIndex(indx)){
+                //si hay un oponente hacia arribba y a la derecha del espacio en blanco
+                if (state[indx] == op){
+                    //se escanea la diagonal hasta hallar una ficha del color del jugador actual en la fila actual
+                    var i = row;
+                    for (var j = col + 1; j < 8; j++){
+                        i--;
+                        indx = index(i, j);
+                        
+                        if (isValidIndex(indx)){
+                            if (state[indx] == turn){
+                                state = newState;
+                                break;
+                            }else if (state[indx] == op){
+                                newState = setCharAt(newState, indx, turn);//reemplaza la ficha del oponente por la del jugador que movió
+                            }else{
+                                newState = state;
+                                break;
+                            }
+                        }                
+                    }
+                    newState = state;
+                }
+            }
+    
+            //se analiza la diagonal derecha inferior
+            indx = index(row + 1, col + 1);
+            if (isValidIndex(indx)){
+                //si hay un oponente hacia arribba y a la derecha del espacio en blanco
+                if (state[indx] == op){
+                    //se escanea la diagonal hasta hallar una ficha del color del jugador actual en la fila actual
+                    var i = row;
+                    for (var j = col + 1; j < 8; j++){
+                        i++;
+                        indx = index(i, j);
+                        
+                        if (isValidIndex(indx)){
+                            if (state[indx] == turn){
+                                state = newState;
+                                break;
+                            }else if (state[indx] == op){
+                                newState = setCharAt(newState, indx, turn);//reemplaza la ficha del oponente por la del jugador que movió
+                            }else{
+                                newState = state;
+                                break;
+                            }
+                        }    
+                    }
+                    newState = state;
+                }
+            }
+    
+            //se analiza la diagonal izquierda superior
+            indx = index(row - 1, col - 1);
+            if (isValidIndex(indx)){
+                //si hay un oponente hacia arribba y a la derecha del espacio en blanco
+                if (state[indx] == op){
+                    //se escanea la diagonal hasta hallar una ficha del color del jugador actual en la fila actual
+                    var i = row;
+                    for (var j = col - 1; j > -1; j--){
+                        i--;
+                        indx = index(i, j);
+                        
+                        if (isValidIndex(indx)){
+                            if (state[indx] == turn){
+                                state = newState;
+                                break;
+                            }else if (state[indx] == op){
+                                newState = setCharAt(newState, indx, turn);//reemplaza la ficha del oponente por la del jugador que movió
+                            }else{
+                                newState = state;
+                                break;
+                            }
+                        }    
+                    }
+                    newState = state;
+                }
+            }
+    
+            //se analiza la diagonal izquierda inferior
+            indx = index(row + 1, col - 1);
+            if (isValidIndex(indx)){
+                //si hay un oponente hacia arribba y a la derecha del espacio en blanco
+                if (state[indx] == op){
+                    //se escanea la diagonal hasta hallar una ficha del color del jugador actual en la fila actual
+                    var i = row;
+                    for (var j = col - 1; j > -1; j--){
+                        i++;
+                        indx = index(i, j);
+                        
+                        if (isValidIndex(indx)){
+                            if (state[indx] == turn){
+                                state = newState;
+                                break;
+                            }else if (state[indx] == op){
+                                newState = setCharAt(newState, indx, turn);//reemplaza la ficha del oponente por la del jugador que movió
+                            }else{
+                                newState = state;
+                                break;
+                            }
+                        }    
+                    }
+                    newState = state;
                 }
             }
         }
-    }
+        console.log(`c: ${c}`);
+        //console.log(estadoActual);
+        //console.log(newState);
+    }while(newState !== estadoActual && c < 1000);
 
-    //se analiza la vertical inferior
-    indx = index(row + 1, col);
-    if (isValidIndex(indx)){
-        //si hay un oponente hacia abajo del espacio en blanco
-        if (state[indx] == op){
-            //se escanea hacia abajo hasta hallar una ficha del color del jugador actual en la fila actual
-            for (var i = row + 1; i < 8; i++){
-                indx = index(i, col);       
-                if (state[indx] == turn){
-                    state = newState;
-                    break;
-                }else if (state[indx] == op){
-                    newState = `${newState.substring(0, indx)}${turn}${newState.substring(indx + 1)}`;//reemplaza la ficha del oponente por la del jugador que movió
-                }else{
-                    break;
-                }
-            }
-        }
-    }
-
-    //se analiza la vertical superior
-    indx = index(row - 1, col);
-    if (isValidIndex(indx)){
-        //si hay un oponente hacia arriba del espacio en blanco
-        if (state[indx] == op){
-            //se escanea hacia arriba hasta hallar una ficha del color del jugador actual en la fila actual
-            for (var i = row - 1; i > -1; i--){
-                indx = index(i, col);       
-                if (state[indx] == turn){
-                    state = newState;
-                    break;
-                }else if (state[indx] == op){
-                    newState = `${newState.substring(0, indx)}${turn}${newState.substring(indx + 1)}`;//reemplaza la ficha del oponente por la del jugador que movió
-                }else{
-                    break;
-                }
-            }
-        }
-    }
-
-    //se analiza la diagonal derecha superior
-    indx = index(row - 1, col + 1);
-    if (isValidIndex(indx)){
-        //si hay un oponente hacia arribba y a la derecha del espacio en blanco
-        if (state[indx] == op){
-            //se escanea la diagonal hasta hallar una ficha del color del jugador actual en la fila actual
-            var i = row;
-            for (var j = col + 1; j < 8; j++){
-                i--;
-                indx = index(i, j);
-                
-                if (isValidIndex(indx)){
-                    if (state[indx] == turn){
-                        state = newState;
-                        break;
-                    }else if (state[indx] == op){
-                        newState = `${newState.substring(0, indx)}${turn}${newState.substring(indx + 1)}`;//reemplaza la ficha del oponente por la del jugador que movió
-                    }else{
-                        break;
-                    }
-                }                
-            }
-        }
-    }
-
-    //se analiza la diagonal derecha inferior
-    indx = index(row + 1, col + 1);
-    if (isValidIndex(indx)){
-        //si hay un oponente hacia arribba y a la derecha del espacio en blanco
-        if (state[indx] == op){
-            //se escanea la diagonal hasta hallar una ficha del color del jugador actual en la fila actual
-            var i = row;
-            for (var j = col + 1; j < 8; j++){
-                i++;
-                indx = index(i, j);
-                
-                if (isValidIndex(indx)){
-                    if (state[indx] == turn){
-                        state = newState;
-                        break;
-                    }else if (state[indx] == op){
-                        newState = `${newState.substring(0, indx)}${turn}${newState.substring(indx + 1)}`;//reemplaza la ficha del oponente por la del jugador que movió
-                    }else{
-                        break;
-                    }
-                }    
-            }
-        }
-    }
-
-    //se analiza la diagonal izquierda superior
-    indx = index(row - 1, col - 1);
-    if (isValidIndex(indx)){
-        //si hay un oponente hacia arribba y a la derecha del espacio en blanco
-        if (state[indx] == op){
-            //se escanea la diagonal hasta hallar una ficha del color del jugador actual en la fila actual
-            var i = row;
-            for (var j = col - 1; j > -1; j--){
-                i--;
-                indx = index(i, j);
-                
-                if (isValidIndex(indx)){
-                    if (state[indx] == turn){
-                        state = newState;
-                        break;
-                    }else if (state[indx] == op){
-                        newState = `${newState.substring(0, indx)}${turn}${newState.substring(indx + 1)}`;//reemplaza la ficha del oponente por la del jugador que movió
-                    }else{
-                        break;
-                    }
-                }    
-            }
-        }
-    }
-
-    //se analiza la diagonal izquierda inferior
-    indx = index(row + 1, col - 1);
-    if (isValidIndex(indx)){
-        //si hay un oponente hacia arribba y a la derecha del espacio en blanco
-        if (state[indx] == op){
-            //se escanea la diagonal hasta hallar una ficha del color del jugador actual en la fila actual
-            var i = row;
-            for (var j = col - 1; j > -1; j--){
-                i++;
-                indx = index(i, j);
-                
-                if (isValidIndex(indx)){
-                    if (state[indx] == turn){
-                        state = newState;
-                        break;
-                    }else if (state[indx] == op){
-                        newState = `${newState.substring(0, indx)}${turn}${newState.substring(indx + 1)}`;//reemplaza la ficha del oponente por la del jugador que movió
-                    }else{
-                        break;
-                    }
-                }    
-            }
-        }
-    }
-
+    
     return newState;
 }
 
