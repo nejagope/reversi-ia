@@ -1,11 +1,13 @@
-const MAX_LEVEL = 4;
+const MAX_LEVEL = 8;
 var LEVEL = 1;
 
 document.body.onload = getMove;
 
 function getMove(){  
     var move = getBestMove();      
-    //document.body.innerHTML = `${move.row}${move.col}`;    
+    document.body.innerHTML = `${move.row}${move.col}`; 
+    console.log(`Mejor movimiento:`); 
+    console.log(move);
 }
 
 function getBestMove(){
@@ -40,32 +42,69 @@ function getBestMove(){
         turn: turn,
         nextTurn: 1        
     }
-    //movesTree.nextMoves = getPossibleMoves(state, turn);
     
     LEVEL = 1;
-    movsTree = getMovesTree(movesTree);    
+    movsTree = getMovesTree(movesTree);
+    assignHeuristic(movesTree, turn);    
 
-    document.body.innerHTML = JSON.stringify(movsTree);
-    //console.log("Estado:");
-    //console.log(state);
-    //console.log(`Posibles movimientos de ${turn}:`)
-    /*
-    console.log('Arbol de movimientos')
-    console.log(movsTree);    
-        
-    if (movs.length > 0){        
-        //movs.sort((m1, m2) => m2.heuristicaTablero - m1.heuristicaTablero);                
-        //console.log(`Mejor movimiento:`);
-        //console.log(movs[0]);
-        return movs[0]
+    //document.body.innerHTML = JSON.stringify(movsTree);
+
+    //se obtienen los movimientos que tienen la mayor heurística    
+    var bestMoves = movesTree.nextMoves.filter((m) => m.heuristic = movesTree.heuristic);
+    
+    if (bestMoves){
+        /*
+        if (bestMoves.length > 1){
+            bestMoves.sort((m1, m2) => countCharsInString(m2.newState, turn) - countCharsInString(m1.newState, turn))
+        }
+        */
+        console.log("best moves:");
+        console.log(bestMoves);
+        return bestMoves[0];
     }
-    */
+
     return {row: "", col: ""};
+}
+
+function countCharsInString(str, char){
+    var c = 0;
+    for (var i = 0; i < str.length; i++){
+        if (str[i] == char)
+            c++;
+    }
+    return c;
+}
+
+function assignHeuristic(mov, turn){
+    if (mov.nextMoves){
+        mov.nextMoves.forEach(nextMove => {
+            assignHeuristic(nextMove, turn);
+        });
+        //min max        
+        var heuristic = mov.nextMoves[0].heuristic;
+        if (mov.turn == turn){
+            //debe maximizarse            
+            mov.nextMoves.forEach(nextMove => {                
+                heuristic = nextMove.heuristic > heuristic ? nextMove.heuristic : heuristic;                                
+            }) 
+        }else{
+            //debe minimizarse            
+            mov.nextMoves.forEach(nextMove => {
+                //console.log(`Es menor ${nextMove.heuristic} que ${heuristic}?`)
+                heuristic = nextMove.heuristic < heuristic ? nextMove.heuristic : heuristic;      
+                //console.log(`nueva huristica: ${heuristic}`)
+            }) 
+            //console.log('heur < ' + heuristic)
+        }
+        mov.heuristic = heuristic;
+    }else{
+        mov.heuristic = getHeuristic(mov);
+    }
 }
 
 function getMovesTree(move){        
     if (LEVEL < MAX_LEVEL){        
-        console.log(`turno ${move.turn} -- level ${LEVEL}` )    
+        //console.log(`turno ${move.turn} -- level ${LEVEL}` )    
         move.nextMoves = getPossibleMoves(move.newState, move.nextTurn);
         LEVEL++;
         move.nextMoves.forEach(nextMove => {            
@@ -307,7 +346,7 @@ function getStateAfterMove(state, turn, mov){
                 }
             }
         }
-        console.log(`c: ${c}`);
+        //console.log(`c: ${c}`);
         //console.log(estadoActual);
         //console.log(newState);
     }while(newState !== estadoActual && c < 1000);
@@ -327,13 +366,12 @@ function getPossibleMoves(state, turn){
             if (playable(state, row, col, turn)){
                 var move = {
                     row: row,
-                    col: col,
-                    state: state,                    
+                    col: col,                                     
                     turn: turn,
-                    nextTurn: turn == 1 ? 0: 1,
-                    heuristicaTablero: getHeuristica(row, col)
+                    nextTurn: turn == 1 ? 0: 1,                    
+                    state: state
                 };               
-                move.newState =  getStateAfterMove(state, turn, move);
+                move.newState =  getStateAfterMove(state, turn, move);                
                 moves.push(move);
             }
         }
@@ -512,20 +550,17 @@ function getParameterByName(name, url = window.location.href) {
     return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 
-function gentRand(min, max){    
-    return Math.floor(Math.random() * (max - min)) + min
-}
-
-function getHeuristica(row, col){
-    var heuristicaTablero =  [
-        [120, -20, 20, 5, 5, 20, -20, 120 ],
-        [-20, -40, -5,-5,-5,-5,  -40,-20 ],
-        [20,-5,15,3,3,15,-5,20],        
-        [5,-5,3,3,3,3,-5,5],
-        [5,-5,3,3,3,3,-5,5],        
-        [20,-5,15,3,3,15,-5,20],
-        [-20, -40, -5,-5,-5,-5,  -40,-20 ],
-        [120, -20, 20, 5, 5, 20, -20, 120 ]
+function getHeuristic(move){
+    var boardHeuristic =  [
+        [ 120, -20,  20,   5,   5,  20, -20, 120],
+        [ -20, -40,  -5,  -5,  -5,  -5, -40, -20],
+        [  20,  -5,  15,   3,   3,  15,  -5,  20],        
+        [   5,  -5,   3,   3,   3,   3,  -5,   5],
+        [   5,  -5,   3,   3,   3,   3,  -5,   5],        
+        [  20,  -5,  15,   3,   3,  15,  -5,  20],        
+        [ -20, -40,  -5,  -5,  -5,  -5, -40, -20],
+        [ 120, -20,  20,   5,   5,  20, -20, 120]
     ]
-    return heuristicaTablero[row][col];
+    var points = countCharsInString(move.newState, move.turn);                    
+    return boardHeuristic[move.row][move.col] * 1.0 + points * 1.0 /64.0;
 }
