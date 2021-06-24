@@ -1,10 +1,11 @@
-const level = 5;
+const MAX_LEVEL = 4;
+var LEVEL = 1;
 
 document.body.onload = getMove;
 
 function getMove(){  
     var move = getBestMove();      
-    document.body.innerHTML = `${move.row}${move.col}`;
+    //document.body.innerHTML = `${move.row}${move.col}`;    
 }
 
 function getBestMove(){
@@ -29,20 +30,50 @@ function getBestMove(){
     state = state.replace(/ /g, ''); 
     */   
     /* ----------- fin pruebas ------------- */
+    if (!state || !(turn == 1 || turn == 0)){
+        return {row: "", col: ""};
+    }
 
-    var movs = getPossibleMoves(state, turn);
-    console.log("Estado:");
-    console.log(state);
-    console.log(`Posibles movimientos de ${turn}:`)
-    console.log(movs);    
+    var movesTree = {
+        state: state,
+        newState: state,
+        turn: turn,
+        nextTurn: 1        
+    }
+    //movesTree.nextMoves = getPossibleMoves(state, turn);
+    
+    LEVEL = 1;
+    movsTree = getMovesTree(movesTree);    
+
+    document.body.innerHTML = JSON.stringify(movsTree);
+    //console.log("Estado:");
+    //console.log(state);
+    //console.log(`Posibles movimientos de ${turn}:`)
+    /*
+    console.log('Arbol de movimientos')
+    console.log(movsTree);    
         
     if (movs.length > 0){        
-        movs.sort((m1, m2) => m2.heuristicaTablero - m1.heuristicaTablero);                
-        console.log(`Mejor movimiento:`);
-        console.log(movs[0]);
+        //movs.sort((m1, m2) => m2.heuristicaTablero - m1.heuristicaTablero);                
+        //console.log(`Mejor movimiento:`);
+        //console.log(movs[0]);
         return movs[0]
     }
+    */
     return {row: "", col: ""};
+}
+
+function getMovesTree(move){        
+    if (LEVEL < MAX_LEVEL){        
+        console.log(`turno ${move.turn} -- level ${LEVEL}` )    
+        move.nextMoves = getPossibleMoves(move.newState, move.nextTurn);
+        LEVEL++;
+        move.nextMoves.forEach(nextMove => {            
+            getMovesTree(nextMove);
+        });
+        LEVEL--;
+    }    
+    return move;
 }
 
 function setCharAt(str, pos, chr){    
@@ -299,6 +330,7 @@ function getPossibleMoves(state, turn){
                     col: col,
                     state: state,                    
                     turn: turn,
+                    nextTurn: turn == 1 ? 0: 1,
                     heuristicaTablero: getHeuristica(row, col)
                 };               
                 move.newState =  getStateAfterMove(state, turn, move);

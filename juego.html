@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego</title>
+
+    <script  src="https://code.jquery.com/jquery-3.6.0.min.js"  integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="  crossorigin="anonymous"></script>
+
+    <script>
+        function step(){            
+            var texto = $("#inTablero").val();
+            if (texto.length != 64){
+                alert(`Texto debe tener 64 chars y tiene ${texto.length}`);
+                return;
+            }
+                
+
+            var nuevoTexto = "";
+            for (var i = 0; i < texto.length; i++){                      
+                var char = texto[i];
+                console.log(char);
+                if (char == 2)
+                    char = '-';
+                else if (char == 1)
+                    char = 'X'
+                else
+                    char = 'O';
+                
+                if (i % 8 == 0)
+                    nuevoTexto += "<br>";                      
+                nuevoTexto += char;
+                
+            }
+
+            var html = `<div class="divTurno">${nuevoTexto}</div>`;
+            console.log(html);
+            $("#divContainer").append(html);
+            $("#inTablero").val("");
+        }        
+    </script>
+
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+        }
+        
+        .divTurno{
+            float: left;
+            position: relative;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+    <input id="inTablero" type="text"/>
+    <button onclick="step()">Agregar</button>
+    <div id="divContainer"></div>
+</body>
+</html>
