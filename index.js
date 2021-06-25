@@ -41,8 +41,8 @@ function getMove(){
 }
 
 function getBestMove(state, turn){
-    //var state = getParameterByName("estado");
-    //var turn = getParameterByName("turno");
+    var state = getParameterByName("estado");
+    var turn = getParameterByName("turno");
     //console.log(state);
     //console.log(turno);
     /* ----------- pruebas ------------- */
