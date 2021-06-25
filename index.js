@@ -1,5 +1,4 @@
-
-
+/*
 const express = require('express');
 const app = express();
 const port = process.env.port || 3000;
@@ -10,14 +9,15 @@ app.get('/', (req, res) => {
         var estado = req.query.estado;
 
         var move = getBestMove(estado, turno);
-        //console.log(turno)
-        //console.log(estado)        
+        console.log(turno)
+        console.log(estado)        
         if (move.row)
             res.send(`${move.row}${move.col}`)
         else
-            res.send("11");
+            res.send("");
     }catch(ex){
-
+        console.log(ex);
+        res.send(ex)
     }
   
 })
@@ -25,23 +25,23 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
   console.log(`Listening at http://localhost:${port}`)
 })
-
+*/
 
 const MAX_LEVEL = 5;
 var LEVEL = 1;
 
-//document.body.onload = getMove;
+document.body.onload = getMove;
 
-function getMove(){  
-    var move = getBestMove();      
+function getMove(){
+    var state = getParameterByName("estado");
+    var turn = getParameterByName("turno");  
+    var move = getBestMove(state, turn);      
     document.body.innerHTML = `${move.row}${move.col}`; 
     console.log(`Mejor movimiento:`); 
     console.log(move);
 }
 
-function getBestMove(state, turn){
-    //var state = getParameterByName("estado");
-    //var turn = getParameterByName("turno");
+function getBestMove(state, turn){    
     //console.log(state);
     //console.log(turno);
     /* ----------- pruebas ------------- */
@@ -75,8 +75,8 @@ function getBestMove(state, turn){
     LEVEL = 1;
     movesTree = getMovesTree(movesTree);
     assignHeuristic(movesTree, turn);    
-
-    //document.body.innerHTML = JSON.stringify(movsTree);
+    //console.log(movesTree)
+    //document.body.innerHTML = JSON.stringify(movesTree);
 
     //se obtienen los movimientos que tienen la mayor heurística    
     var bestMoves = movesTree.nextMoves.filter((m) => m.heuristic = movesTree.heuristic);
@@ -127,6 +127,11 @@ function assignHeuristic(mov, turn){
                 //console.log('heur < ' + heuristic)
             }
             mov.heuristic = heuristic;
+        }else if (mov.turn == turn){
+            mov.heuristic = -100;
+        }
+        else if (mov.turn != turn){
+            mov.heuristic = 100;
         }
     }else{
         mov.heuristic = getHeuristic(mov);
