@@ -437,8 +437,11 @@ function playable(state, row, col, turn){
         if (state[indx] == op){
             //se escanea hacia la derecha hasta hallar una ficha del color del jugador actual en la fila actual
             for (var j = col + 1; j < 8; j++){                
-                if (state[index(row, j)] == turn)
+                indx = index(row, j);
+                if (state[indx] == turn)
                     return true;
+                else if (state[indx] == 2)
+                    break;
             }
         }
     }
@@ -450,8 +453,11 @@ function playable(state, row, col, turn){
         if (state[indx] == op){
             //se escanea hacia la izquierda hasta hallar una ficha del color del jugador actual en la fila actual
             for (var j = col - 1; j > -1; j--){
-                if (state[index(row, j)] == turn)
+                indx = index(row, j);
+                if (state[indx] == turn)
                     return true;
+                else if (state[indx] == 2)
+                    break;
             }
         }
     }
@@ -463,8 +469,11 @@ function playable(state, row, col, turn){
         if (state[indx] == op){
             //se escanea hacia abajo hasta hallar una ficha del color del jugador actual en la fila actual
             for (var i = row + 1; i < 8; i++){
-                if (state[index(i, col)] == turn)
+                indx = index(i, col);
+                if (state[indx] == turn)
                     return true;
+                else if (state[indx] == 2)
+                    break;
             }
         }
     }
@@ -476,8 +485,11 @@ function playable(state, row, col, turn){
         if (state[indx] == op){
             //se escanea hacia arriba hasta hallar una ficha del color del jugador actual en la fila actual
             for (var i = row - 1; i > -1; i--){
-                if (state[index(i, col)] == turn)
+                indx = index(i, col);
+                if (state[indx] == turn)
                     return true;
+                else if (state[indx] == 2)
+                    break;
             }
         }
     }
@@ -492,9 +504,11 @@ function playable(state, row, col, turn){
             for (var j = col + 1; j < 8; j++){
                 i--;
                 indx = index(i, j);
-                if (isValidIndex){
-                    if (state[index(i, j)] == turn)
+                if (isValidIndex(indx)){
+                    if (state[indx] == turn)
                         return true;
+                    else if (state[indx] == 2)
+                        break;
                 }                                
             }
         }
@@ -510,10 +524,12 @@ function playable(state, row, col, turn){
             for (var j = col + 1; j < 8; j++){
                 i++;
                 indx = index(i, j);
-                if (isValidIndex){
-                    if (state[index(i, j)] == turn)
+                if (isValidIndex(indx)){
+                    if (state[indx] == turn)
                         return true;
-                }                                
+                    else if (state[indx] == 2)
+                        break;
+                }                               
             }
         }
     }
@@ -528,9 +544,11 @@ function playable(state, row, col, turn){
             for (var j = col - 1; j > -1; j--){
                 i--;
                 indx = index(i, j);
-                if (isValidIndex){
-                    if (state[index(i, j)] == turn)
+                if (isValidIndex(indx)){
+                    if (state[indx] == turn)
                         return true;
+                    else if (state[indx] == 2)
+                        break;
                 }                                
             }
         }
@@ -546,9 +564,11 @@ function playable(state, row, col, turn){
             for (var j = col - 1; j > -1; j--){
                 i++;
                 indx = index(i, j);
-                if (isValidIndex){
-                    if (state[index(i, j)] == turn)
+                if (isValidIndex(indx)){
+                    if (state[indx] == turn)
                         return true;
+                    else if (state[indx] == 2)
+                        break;
                 }                                
             }
         }
