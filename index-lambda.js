@@ -66,7 +66,7 @@ function getBestMove(state, turn){
         state: state,
         newState: state,
         turn: turn,
-        nextTurn: 1        
+        nextTurn: turn        
     }
     
     LEVEL = 1;
@@ -79,11 +79,9 @@ function getBestMove(state, turn){
     var bestMoves = movesTree.nextMoves.filter((m) => m.heuristic = movesTree.heuristic);
     
     if (bestMoves){
-        /*
         if (bestMoves.length > 1){
-            bestMoves.sort((m1, m2) => countCharsInString(m2.newState, turn) - countCharsInString(m1.newState, turn))
+            bestMoves.sort((m1, m2) => getHeuristic(m2) - getHeuristic(m1))
         }
-        */
         //console.log("best moves:");
         //console.log(bestMoves);
         return bestMoves[0];
@@ -648,6 +646,7 @@ function getHeuristic(move){
         [ -20, -40,  -5,  -5,  -5,  -5, -40, -20],
         [ 120, -20,  20,   5,   5,  20, -20, 120]
     ]
-    var points = countCharsInString(move.newState, move.turn);                    
-    return boardHeuristic[move.row][move.col] * 1.0 + points * 1.0 /64.0;
+    //var points = countCharsInString(move.newState, move.turn);                    
+    //return boardHeuristic[move.row][move.col] * 1.0 + points * 1.0 /64.0;
+    return boardHeuristic[move.row][move.col];
 }
