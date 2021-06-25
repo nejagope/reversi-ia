@@ -79,7 +79,10 @@ function getBestMove(state, turn){
     //document.body.innerHTML = JSON.stringify(movesTree);
 
     //se obtienen los movimientos que tienen la mayor heurística    
-    var bestMoves = movesTree.nextMoves.filter((m) => m.heuristic = movesTree.heuristic);
+    var bestMoves =  bestMoves = movesTree.nextMoves;
+    if (movesTree.heuristic != -100 && movesTree.heuristic != 100){
+        bestMoves = movesTree.nextMoves.filter((m) => m.heuristic = movesTree.heuristic);
+    }
     
     if (bestMoves){
         
