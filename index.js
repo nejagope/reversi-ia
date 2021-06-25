@@ -1,5 +1,5 @@
 
-/*
+
 const express = require('express');
 const app = express();
 const port = process.env.port || 3000;
@@ -26,7 +26,6 @@ app.listen(port, () => {
   console.log(`Listening at http://localhost:${port}`)
 })
 
-*/
 
 const MAX_LEVEL = 5;
 var LEVEL = 1;
@@ -74,7 +73,7 @@ function getBestMove(state, turn){
     }
     
     LEVEL = 1;
-    movsTree = getMovesTree(movesTree);
+    movesTree = getMovesTree(movesTree);
     assignHeuristic(movesTree, turn);    
 
     //document.body.innerHTML = JSON.stringify(movsTree);
