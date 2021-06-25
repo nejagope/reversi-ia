@@ -28,10 +28,10 @@ app.listen(port, () => {
 
 */
 
-const MAX_LEVEL = 8;
+const MAX_LEVEL = 5;
 var LEVEL = 1;
 
-document.body.onload = getMove;
+//document.body.onload = getMove;
 
 function getMove(){  
     var move = getBestMove();      
@@ -41,8 +41,8 @@ function getMove(){
 }
 
 function getBestMove(state, turn){
-    var state = getParameterByName("estado");
-    var turn = getParameterByName("turno");
+    //var state = getParameterByName("estado");
+    //var turn = getParameterByName("turno");
     //console.log(state);
     //console.log(turno);
     /* ----------- pruebas ------------- */
@@ -432,6 +432,7 @@ function playable(state, row, col, turn){
     var op = opponent(turn);
 
     //evitar suicidio
+    /*
     var rowSup = row - 1;
     var rowInf = row + 1;
     var colDer = col + 1;
@@ -462,6 +463,7 @@ function playable(state, row, col, turn){
     }else if (state[indx2] == op){           
         return false;                    
     }
+    */
     
     //se analiza la horizontal derecha
     indx = index(row, col + 1);
