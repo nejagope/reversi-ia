@@ -1,4 +1,5 @@
 
+/*
 const express = require('express');
 const app = express();
 const port = process.env.port || 3000;
@@ -25,12 +26,12 @@ app.listen(port, () => {
   console.log(`Listening at http://localhost:${port}`)
 })
 
-
+*/
 
 const MAX_LEVEL = 8;
 var LEVEL = 1;
 
-//document.body.onload = getMove;
+document.body.onload = getMove;
 
 function getMove(){  
     var move = getBestMove();      
