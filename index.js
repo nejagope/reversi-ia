@@ -429,6 +429,38 @@ function playable(state, row, col, turn){
         
     //condición 2: flanquea al adversario
     var op = opponent(turn);
+
+    //evitar suicidio
+    var rowSup = row - 1;
+    var rowInf = row + 1;
+    var colDer = col + 1;
+    var colIzq = col - 1;
+    
+    var indx1 = index(row, colDer);
+    var indx2 = index(row, colIzq);
+    if (isValidIndex(indx1)){
+        if (state[indx1] == op){
+            if (!isValidIndex(indx2))
+                return false;
+            else if(state[indx2] == op)
+                return false;
+        } 
+    }else if (state[indx2] == op){            
+        return false;                    
+    }
+
+    var indx1 = index(rowSup, col);
+    var indx2 = index(rowInf, col);
+    if (isValidIndex(indx1)){
+        if (state[indx1] == op){
+            if (!isValidIndex(indx2))
+                return false;
+            else if(state[indx2] == op)
+                return false;
+        } 
+    }else if (state[indx2] == op){           
+        return false;                    
+    }
     
     //se analiza la horizontal derecha
     indx = index(row, col + 1);
