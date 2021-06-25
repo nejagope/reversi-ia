@@ -2,9 +2,9 @@
   "name": "reversi-ia",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "index-node.js",
   "scripts": {
-    "test": "node index.js"
+    "test": "node index-node.js"
   },
   "repository": {
     "type": "git",
