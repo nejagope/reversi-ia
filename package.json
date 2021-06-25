@@ -1,0 +1,27 @@
+{
+  "name": "reversi-ia",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nejagope/reversi-ia.git"
+  },
+  "keywords": [
+    "reversi",
+    "artificial",
+    "intelligence"
+  ],
+  "author": "Nelson González",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nejagope/reversi-ia/issues"
+  },
+  "homepage": "https://github.com/nejagope/reversi-ia#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}

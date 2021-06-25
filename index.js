@@ -1,7 +1,36 @@
+
+const express = require('express');
+const app = express();
+const port = process.env.port || 3000;
+
+app.get('/', (req, res) => {
+    try{
+        var turno = req.query.turno;
+        var estado = req.query.estado;
+
+        var move = getBestMove(estado, turno);
+        //console.log(turno)
+        //console.log(estado)        
+        if (move.row)
+            res.send(`${move.row}${move.col}`)
+        else
+            res.send("11");
+    }catch(ex){
+
+    }
+  
+})
+
+app.listen(port, () => {
+  console.log(`Listening at http://localhost:${port}`)
+})
+
+
+
 const MAX_LEVEL = 8;
 var LEVEL = 1;
 
-document.body.onload = getMove;
+//document.body.onload = getMove;
 
 function getMove(){  
     var move = getBestMove();      
@@ -10,9 +39,9 @@ function getMove(){
     console.log(move);
 }
 
-function getBestMove(){
-    var state = getParameterByName("estado");
-    var turn = getParameterByName("turno");
+function getBestMove(state, turn){
+    //var state = getParameterByName("estado");
+    //var turn = getParameterByName("turno");
     //console.log(state);
     //console.log(turno);
     /* ----------- pruebas ------------- */
@@ -58,8 +87,8 @@ function getBestMove(){
             bestMoves.sort((m1, m2) => countCharsInString(m2.newState, turn) - countCharsInString(m1.newState, turn))
         }
         */
-        console.log("best moves:");
-        console.log(bestMoves);
+        //console.log("best moves:");
+        //console.log(bestMoves);
         return bestMoves[0];
     }
 
@@ -80,23 +109,25 @@ function assignHeuristic(mov, turn){
         mov.nextMoves.forEach(nextMove => {
             assignHeuristic(nextMove, turn);
         });
-        //min max        
-        var heuristic = mov.nextMoves[0].heuristic;
-        if (mov.turn == turn){
-            //debe maximizarse            
-            mov.nextMoves.forEach(nextMove => {                
-                heuristic = nextMove.heuristic > heuristic ? nextMove.heuristic : heuristic;                                
-            }) 
-        }else{
-            //debe minimizarse            
-            mov.nextMoves.forEach(nextMove => {
-                //console.log(`Es menor ${nextMove.heuristic} que ${heuristic}?`)
-                heuristic = nextMove.heuristic < heuristic ? nextMove.heuristic : heuristic;      
-                //console.log(`nueva huristica: ${heuristic}`)
-            }) 
-            //console.log('heur < ' + heuristic)
+        //min max  
+        if (mov.nextMoves[0]){   
+            var heuristic = mov.nextMoves[0].heuristic;
+            if (mov.turn == turn){
+                //debe maximizarse            
+                mov.nextMoves.forEach(nextMove => {                
+                    heuristic = nextMove.heuristic > heuristic ? nextMove.heuristic : heuristic;                                
+                }) 
+            }else{
+                //debe minimizarse            
+                mov.nextMoves.forEach(nextMove => {
+                    //console.log(`Es menor ${nextMove.heuristic} que ${heuristic}?`)
+                    heuristic = nextMove.heuristic < heuristic ? nextMove.heuristic : heuristic;      
+                    //console.log(`nueva huristica: ${heuristic}`)
+                }) 
+                //console.log('heur < ' + heuristic)
+            }
+            mov.heuristic = heuristic;
         }
-        mov.heuristic = heuristic;
     }else{
         mov.heuristic = getHeuristic(mov);
     }
